@@ -119,6 +119,7 @@ function App({ app }: AppProps): JSX.Element {
                           label={field.label}
                           value={values[field.name] as Api.ValueField['value']}
                           error={errors[field.name] ?? null}
+                          description={field.description}
                           onChange={(value) => {
                             setValues((prev) => ({
                               ...prev,
@@ -139,6 +140,7 @@ function App({ app }: AppProps): JSX.Element {
                           name={field.name}
                           label={field.label}
                           value={values[field.name] as Api.CheckboxField['value']}
+                          description={field.description}
                           onChange={(value) => {
                             setValues((prev) => ({
                               ...prev,
@@ -156,6 +158,7 @@ function App({ app }: AppProps): JSX.Element {
                           label={field.label}
                           value={field.value}
                           checked={values[field.name] === field.value}
+                          description={field.description}
                           onChange={(value) => {
                             setValues((prev) => ({
                               ...prev,
@@ -209,7 +212,17 @@ interface ValueFieldProps extends Omit<Api.ValueField, 'kind'> {
   error?: string | null;
 }
 
-function ValueField({ id, type, name, label, placeholder, value, error, onChange }: ValueFieldProps): JSX.Element {
+function ValueField({
+  id,
+  type,
+  name,
+  label,
+  placeholder,
+  description,
+  value,
+  error,
+  onChange,
+}: ValueFieldProps): JSX.Element {
   switch (type) {
     case 'text':
     case 'number':
@@ -225,6 +238,7 @@ function ValueField({ id, type, name, label, placeholder, value, error, onChange
             defaultValue={value}
             onChange={(evt) => onChange?.(evt.target.value)}
           />
+          {description && <p>{description}</p>}
           {error !== null && <p>{error}</p>}
         </div>
       );
@@ -234,6 +248,7 @@ function ValueField({ id, type, name, label, placeholder, value, error, onChange
           <label htmlFor={id}>{label}</label>
           <br />
           <textarea id={id} name={name} placeholder={placeholder} defaultValue={value} />
+          {description && <p>{description}</p>}
           {error !== null && <p>{error}</p>}
         </div>
       );
@@ -321,7 +336,7 @@ export function getStaticProps(): { props: AppProps } {
             id: 'phone',
             kind: 'text',
             name: 'phone',
-            type: 'text',
+            type: 'number',
             label: 'Phone',
             required: true,
             rules: [
